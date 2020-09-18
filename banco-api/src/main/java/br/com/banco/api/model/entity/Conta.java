@@ -1,6 +1,6 @@
 package br.com.banco.api.model.entity;
 
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class Conta {
@@ -23,11 +25,12 @@ public class Conta {
 	@Column(nullable = false, length = 11)
 	private String cpf;
 	
-	private BigDecimal saldo;
+	private Double saldo;
 	
-	private String conta;
+	private Integer conta;
 	
 	@Column(name = "data_cadastro")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataCadastro;
 	
 	@PrePersist
@@ -38,7 +41,7 @@ public class Conta {
 	public Conta() {
 	}
 
-	public Conta(Integer id, String nome, String cpf, BigDecimal saldo, String conta, LocalDate dataCadastro) {
+	public Conta(Integer id, String nome, String cpf, Double saldo, Integer conta, LocalDate dataCadastro) {
 		this.id = id;
 		this.nome = nome;
 		this.cpf = cpf;
@@ -71,19 +74,19 @@ public class Conta {
 		this.cpf = cpf;
 	}
 
-	public BigDecimal getSaldo() {
+	public Double getSaldo() {
 		return saldo;
 	}
 
-	public void setSaldo(BigDecimal saldo) {
+	public void setSaldo(Double saldo) {
 		this.saldo = saldo;
 	}
 
-	public String getConta() {
+	public Integer getConta() {
 		return conta;
 	}
 
-	public void setConta(String conta) {
+	public void setConta(Integer conta) {
 		this.conta = conta;
 	}
 
