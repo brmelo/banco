@@ -1,6 +1,7 @@
 package br.com.banco.api.model.entity;
 
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -13,7 +14,8 @@ import javax.persistence.PrePersist;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-public class Conta {
+public class Conta implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +44,7 @@ public class Conta {
 	}
 
 	public Conta(Integer id, String nome, String cpf, Double saldo, Integer conta, LocalDate dataCadastro) {
+		super();
 		this.id = id;
 		this.nome = nome;
 		this.cpf = cpf;
@@ -121,12 +124,6 @@ public class Conta {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "Conta [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", saldo=" + saldo + ", conta=" + conta
-				+ ", dataCadastro=" + dataCadastro + "]";
 	}
 	
 }

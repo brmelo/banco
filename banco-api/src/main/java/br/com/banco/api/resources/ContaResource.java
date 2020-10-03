@@ -1,7 +1,11 @@
-package br.com.banco.api.rest;
+package br.com.banco.api.resources;
 
 
+import java.net.URI;
 import java.util.List;
+
+
+
 import java.util.Optional;
 import java.util.Random;
 
@@ -10,8 +14,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,56 +26,56 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.com.banco.api.dto.ContaDTO;
 import br.com.banco.api.model.entity.Conta;
 import br.com.banco.api.model.repository.ContaRepository;
-
-
+import br.com.banco.api.services.ContaService;
 import br.com.banco.api.validacoes.ValidaCPF;
 
 @RestController
 @RequestMapping("/api/contas")
-@CrossOrigin("http://localhost:4200")
-public class ContaController {
+public class ContaResource {
 	
-	private final ContaRepository contaRepository;
+	@Autowired
+	private ContaService contaService;
 	
 	private Double limiteAbrirConta = 50.00;
 	private Double limiteMaximo = 500.00;
 
-    @Autowired
-    public ContaController(ContaRepository contaRepository) {
-        this.contaRepository = contaRepository;
-    }
-
 	@GetMapping
-	public List<Conta> listarContas(){
-	    return contaRepository.findAll();
+	public ResponseEntity<List<ContaDTO>> listarContas(){
+		List<ContaDTO> lista = contaService.listarContas();
+		return ResponseEntity.ok().body(lista);
 	}
-
-	@GetMapping("/{id}")
-    public Conta pesquisarPorId(@PathVariable Integer id){
-        return contaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente/conta não encontrada"));
+	
+	@GetMapping("/{conta}")
+    public ResponseEntity<List<ContaDTO>> numeroConta(@PathVariable Integer conta){
+		List<ContaDTO> numeroConta = contaService.listarPorNumeroConta(conta);
+		
+		if(numeroConta.size() > 0) {
+			return ResponseEntity.ok().body(numeroConta);	
+		}else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Conta não encontrada");
+		}
     }
 	
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public String salvar(@RequestBody @Valid Conta conta){
+	@PostMapping
+	public ResponseEntity<String> salvar(@RequestBody @Valid ContaDTO contaDTO){
     	
-    	if(conta.getSaldo() < limiteAbrirConta) {
+		if(contaDTO.getSaldo() < limiteAbrirConta) {
     		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente para abertura de nova conta.");
-    	} else if ("".equals(conta.getCpf()) || conta.getCpf() == null){
+    	} else if ("".equals(contaDTO.getCpf()) || contaDTO.getCpf() == null){
     		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "É necessário informar um cpf para abertura de nova conta.");
-    	} else if (ValidaCPF.isCPF(conta.getCpf()) == false) {
+    	} else if (ValidaCPF.isCPF(contaDTO.getCpf()) == false) {
     		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF informado para criação de conta está inválido.");
     	} else {
-    		conta.setConta(aleatorio(100000, 999999));
-    		Conta c = contaRepository.save(conta);
-        	return "Conta cadastrada com sucesso!\n Conta Nº " + c.getConta();
+    		ContaDTO newDTO = contaService.salvar(contaDTO);
+			return ResponseEntity.created(null).body("Conta cadastrada com sucesso!\n Conta Nº " + newDTO.getConta());
     	}
-    	
-    }
-    
-    @PutMapping("/depositar/{id}")
+	}
+	
+	/*   
+    @PutMapping("/depositar/{conta}")
     @ResponseStatus(HttpStatus.OK)
     @Transactional
     public Conta depositar(@Valid @RequestBody Conta conta, @PathVariable Integer id) {
@@ -140,10 +144,5 @@ public class ContaController {
         	throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não foi possível realizar a transferência");
         }
     }*/
-
-    public static int aleatorio(int minimo, int maximo) {
-        Random random = new Random();
-        return random.nextInt((maximo - minimo) + 1) + minimo;
-    }
             
 }
