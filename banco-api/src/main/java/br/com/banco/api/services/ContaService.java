@@ -74,7 +74,7 @@ public class ContaService {
 		
 		if(saque.getSaldo() > limiteMaximo) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Operação de saque tem um limite máximo de 500.00 por operação.");
-    	}else if (saque.getSaldo() > contadb.getSaldo()) {
+    	} else if (saque.getSaldo() > contadb.getSaldo()) {
     		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente para a operação");
     	} else {
     		contadb.setSaldo(contadb.getSaldo() - saque.getSaldo());
@@ -92,14 +92,21 @@ public class ContaService {
 		List<Conta> numeroConta2 = contaRepository.findByConta(conta2);
 		Conta beneficiario = numeroConta2.get(0);
 		
+		if(transferir.getSaldo() > limiteMaximo) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Operação de saque tem um limite máximo de 500.00 por operação.");
+		} else {
+			if(transferir.getSaldo() > solicitante.getSaldo()) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente para a operação");
+			}
+		}
 		solicitante.setSaldo(solicitante.getSaldo() - transferir.getSaldo());
 		beneficiario.setSaldo(beneficiario.getSaldo() + transferir.getSaldo());
-		
+			
 		contaRepository.save(solicitante);
 		contaRepository.save(beneficiario);
-		
+			
 		return new ContaDTO(solicitante);
-	}
+	}	
 	
     public static int aleatorio(int minimo, int maximo) {
         Random random = new Random();

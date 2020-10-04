@@ -1,0 +1,2 @@
+insert into conta(cpf, nome, conta, saldo, data_cadastro) values ('17448936590', 'John Doe', '123456', 50.00, '2020-10-01');
+insert into conta(cpf, nome, conta, saldo, data_cadastro) values ('96209135072', 'Pedro Silva', '654321', 100.00, '2020-10-02');

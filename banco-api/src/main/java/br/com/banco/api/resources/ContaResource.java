@@ -82,41 +82,15 @@ public class ContaResource {
     	return ResponseEntity.ok().body("Saque realizado com sucesso!");
     }
     
-    @PutMapping("/transferir/{conta}&{conta2")
+    @PutMapping("/transferir/{conta}/beneficiario/{conta2}")
     public ResponseEntity<String> transferir(@Valid @RequestBody ContaDTO contaDTO, @PathVariable Integer conta, @PathVariable Integer conta2){
     	Optional<List<ContaDTO>> numeroConta = Optional.of(contaService.listarPorNumeroConta(conta));
     	Optional<List<ContaDTO>> numeroConta2 = Optional.of(contaService.listarPorNumeroConta(conta2));
-    	ContaDTO newDTO = contaService.transferir(contaDTO, conta, conta2);
+    	
+    	if(numeroConta.isPresent() && numeroConta2.isPresent()) {
+    		ContaDTO newDTO = contaService.transferir(contaDTO, conta, conta2);
+    	}
     	return ResponseEntity.ok().body("Transferência realizada com sucesso!");
     }
-       
-    /*@PutMapping("/tranferir/{id}")
-    @Transactional
-    public void transferir(@Valid @RequestBody Conta transf, @PathParam("id") Integer id , @PathParam("conta") Integer conta) {
-
-        Optional<Conta> contaSolicitante = contaRepository.findById(id);
-        List<Conta> contaBeneficiario = contaRepository.findByConta(conta);
-        
-        if(contaSolicitante.isPresent()){
-        	Conta solicitante = contaSolicitante.get();
-        	Conta benenificario = contaBeneficiario.get(conta);
-        	
-        	if(transf.getSaldo() > limiteMaximo) {
-        		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Operação de saque tem um limite máximo de 500.00 por operação.");
-        	}else if (transf.getSaldo() > solicitante.getSaldo()) {
-        		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente para a operação.");
-        	} else {
-        		solicitante.setSaldo(solicitante.getSaldo() - transf.getSaldo());
-                contaRepository.save(solicitante);
                 
-                benenificario.setSaldo(benenificario.getSaldo() + transf.getSaldo());
-                contaRepository.save(benenificario);
-                
-                throw new ResponseStatusException(HttpStatus.OK, "Transferência realizada com sucesso!");
-        	}
-        }else {
-        	throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não foi possível realizar a transferência");
-        }
-    }*/
-            
 }
