@@ -31,9 +31,6 @@ public class ContaResource {
 	
 	@Autowired
 	private ContaRepository contaRepository;
-	
-	private Double limiteAbrirConta = 50.00;
-	//private Double limiteMaximo = 500.00;
 
 	@GetMapping
 	public ResponseEntity<List<ContaDTO>> listarContas(){

@@ -8,7 +8,7 @@
 		<version>2.3.3.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.banco</groupId>
+	<groupId>br.com.banco.api</groupId>
 	<artifactId>banco-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>banco-api</name>
