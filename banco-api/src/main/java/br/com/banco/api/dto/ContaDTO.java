@@ -1,6 +1,11 @@
 package br.com.banco.api.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.banco.api.model.entity.Conta;
 
@@ -12,6 +17,9 @@ public class ContaDTO implements Serializable {
 	private String cpf;
 	private Double saldo;
 	private Integer conta;
+	
+	@JsonFormat(pattern = "dd/MM/yyyy")
+	private LocalDate dataCadastro;
 
 	
 	public ContaDTO() {
@@ -23,6 +31,7 @@ public class ContaDTO implements Serializable {
 		cpf = entity.getCpf();
 		saldo = entity.getSaldo();
 		conta = entity.getConta();
+		dataCadastro = entity.getDataCadastro();
 	}
 	
 	
@@ -34,7 +43,6 @@ public class ContaDTO implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 
 	public String getNome() {
 		return nome;
@@ -74,6 +82,17 @@ public class ContaDTO implements Serializable {
 	public void setConta(Integer conta) {
 		this.conta = conta;
 	}
-	
-	
+
+	public LocalDate getDataCadastro() {
+		return dataCadastro;
+	}
+
+	public void setDataCadastro(LocalDate dataCadastro) {
+		this.dataCadastro = dataCadastro;
+	}
+
+	public static List<ContaDTO> converter(List<Conta> contas) {
+        return contas.stream().map(ContaDTO::new).collect(Collectors.toList());
+    }
+
 }

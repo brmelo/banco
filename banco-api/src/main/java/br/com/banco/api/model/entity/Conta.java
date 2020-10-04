@@ -11,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 @Entity
 public class Conta implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -32,7 +30,6 @@ public class Conta implements Serializable {
 	private Integer conta;
 	
 	@Column(name = "data_cadastro")
-	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataCadastro;
 	
 	@PrePersist
@@ -42,7 +39,10 @@ public class Conta implements Serializable {
 
 	public Conta() {
 	}
-
+	
+	public Conta(Integer conta) {
+	}
+	
 	public Conta(Integer id, String nome, String cpf, Double saldo, Integer conta, LocalDate dataCadastro) {
 		super();
 		this.id = id;
@@ -60,7 +60,7 @@ public class Conta implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	public String getNome() {
 		return nome;
 	}
@@ -105,7 +105,8 @@ public class Conta implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		//result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((conta == null) ? 0 : conta.hashCode());
 		return result;
 	}
 
@@ -118,10 +119,10 @@ public class Conta implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Conta other = (Conta) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (conta == null) {
+			if (other.conta != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!conta.equals(other.conta))
 			return false;
 		return true;
 	}
