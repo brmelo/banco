@@ -5,6 +5,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.br.CPF;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.banco.api.model.entity.Conta;
@@ -16,6 +21,7 @@ public class ContaDTO implements Serializable {
 	private String nome;
 	private String cpf;
 	private Double saldo;
+	
 	private Integer conta;
 	
 	@JsonFormat(pattern = "dd/MM/yyyy")

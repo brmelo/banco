@@ -1,0 +1,67 @@
+<h1 class="mt-4">Conta</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Conta</li>
+</ol>
+<div class="container">
+    <form #form="ngForm" (ngSubmit)="onSubmit()">
+        
+        <div class="row">
+            <div class="col md-12">
+                <div class="alert alert-success" role="alert" *ngIf="success == true">
+                    Conta cadastrada com sucesso! Conta Nº {{ conta.conta }}
+                </div>
+                <div class="alert alert-danger" role="alert" *ngFor="let erro of errors">
+                    {{ erro }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="conta.id">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>DATA ABERTURA</label>
+                    <input class="form-control" [ngModel]="conta.dataCadastro" type="text" name="dataCadastro" id="inputDataCadastro" disabled="true" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Nº CONTA</label>
+                    <input class="form-control" [ngModel]="conta.conta" type="text"  name="conta" id="inputConta" disabled="true" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>NOME</label>
+                    <input class="form-control" [(ngModel)]="conta.nome" type="text" name="nome" id="inputNome" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>CPF *</label>
+                    <input class="form-control" [(ngModel)]="conta.cpf" type="text"  name="cpf" id="inputCpf" required />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>VALOR ABERTURA R$ *</label>
+                    <input class="form-control" [(ngModel)]="conta.saldo" type="number"  name="saldo" id="inputSaldo" required />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa fa-save"></i> Salvar
+                </button>
+
+                <button type="button" class="btn btn-danger ml-1" (click)="voltar()">
+                    <i class="fa fa-times"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

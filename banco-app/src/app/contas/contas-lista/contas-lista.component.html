@@ -1,0 +1,42 @@
+<h1 class="mt-4">Conta</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Relação de Contas Cadastradas</li>
+</ol>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-info" (click)="cadastrar()" ><i class="fa fa-plus"></i>
+                Novo
+            </button>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>NOME</th>
+                        <th>CPF</th>
+                        <th>Nº CONTA</th>
+                        <th>SALDO R$</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let conta of contas">
+                        <td>{{ conta.nome }}</td>
+                        <td>{{ conta.cpf }}</td>
+                        <td>{{ conta.conta }}</td>
+                        <td>{{ conta.saldo }}</td>
+                        <td>
+                            <button class="btn btn-success" routerLink="/contas-form/{{ conta.conta }}">Depósito</button>
+                            <button class="btn btn-danger ml-1" routerLink="/contas-form/{{ conta.conta }}">Saque</button>
+                            <button class="btn btn-warning ml-1">Transferência</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

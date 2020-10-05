@@ -1,6 +1,7 @@
 package br.com.banco.api.resources;
 
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.banco.api.dto.ContaDTO;
 import br.com.banco.api.model.repository.ContaRepository;
@@ -24,6 +27,7 @@ import br.com.banco.api.services.ContaService;
 
 @RestController
 @RequestMapping("/api/contas")
+@CrossOrigin("*")
 public class ContaResource {
 	
 	@Autowired
@@ -49,10 +53,20 @@ public class ContaResource {
 		}
     }
 	
-	@PostMapping
-	public ResponseEntity<String> salvar(@RequestBody @Valid ContaDTO contaDTO){
-    	ContaDTO newDTO = contaService.salvar(contaDTO);
-    	return ResponseEntity.created(null).body("Conta cadastrada com sucesso!\n Conta Nº " + newDTO.getConta());
+	@PostMapping("/cadastrar")
+	public ResponseEntity<String> salvar(@Valid @RequestBody ContaDTO contaDTO){
+		if(contaDTO.getSaldo() != null) {
+			ContaDTO newDTO = contaService.salvar(contaDTO);
+			
+			URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{conta}")
+                    .buildAndExpand(newDTO.getConta())
+                    .toUri();
+			
+	    	return ResponseEntity.created(location).body("Conta cadastrada com sucesso!\n Conta Nº " + newDTO.getConta());
+		}
+		return ResponseEntity.badRequest().body("Informar o valor de entrada");
 	}
 	
     @PutMapping("/depositar/{conta}")
@@ -63,7 +77,7 @@ public class ContaResource {
 			if(numeroConta.isPresent()){
 				ContaDTO newDTO = contaService.depositar(contaDTO, conta);
 			} else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não foi possível realizar o depósito");
+				return ResponseEntity.badRequest().body("Não foi possível realizar o depósito");
         }
 			return ResponseEntity.ok().body("Depósito realizado com sucesso!");
     }

@@ -25,11 +25,13 @@ public class Conta implements Serializable {
 	@Column(nullable = false, length = 11)
 	private String cpf;
 	
+	@Column
 	private Double saldo;
 	
+	@Column
 	private Integer conta;
 	
-	@Column(name = "data_cadastro")
+	@Column(name = "data_cadastro", updatable = false)
 	private LocalDate dataCadastro;
 	
 	@PrePersist

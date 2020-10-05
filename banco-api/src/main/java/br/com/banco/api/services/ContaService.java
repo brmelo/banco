@@ -40,22 +40,27 @@ public class ContaService {
 	public ContaDTO salvar(ContaDTO contaDTO) {
 		
 		if(contaDTO.getSaldo() < limiteAbrirConta) {
-    		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente para abertura de nova conta.");
-    	} else if ("".equals(contaDTO.getCpf()) || contaDTO.getCpf() == null){
-    		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "É necessário informar um cpf para abertura de nova conta.");
-    	} else if (ValidaCPF.isCPF(contaDTO.getCpf()) == false) {
-    		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF informado para criação de conta está inválido.");
-    	} else {
-    		Conta conta = new Conta();
-    		conta.setNome(contaDTO.getNome());
-    		conta.setCpf(contaDTO.getCpf());
-    		conta.setSaldo(contaDTO.getSaldo());
-    		conta.setConta(aleatorio(100000, 999999));
-    		conta.setDataCadastro(contaDTO.getDataCadastro());
-    		conta = contaRepository.save(conta);
-    		return new ContaDTO(conta);
-    	}
-		
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente para abertura de nova conta.");
+		} else if ("".equals(contaDTO.getCpf()) || contaDTO.getCpf() == null){
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "É necessário informar um cpf para abertura de nova conta.");
+		} else if (ValidaCPF.isCPF(contaDTO.getCpf()) == false) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF informado para criação de conta está inválido.");
+		} else {	
+			Conta conta = new Conta();
+			
+			if(contaDTO.getNome() == null || "".equals(contaDTO.getNome())) {
+				conta.setNome("Nome não informado");
+			} else {
+				conta.setNome(contaDTO.getNome());
+			}
+			
+			conta.setCpf(contaDTO.getCpf());
+			conta.setSaldo(contaDTO.getSaldo());
+			conta.setConta(aleatorio(100000, 999999));
+			conta.setDataCadastro(contaDTO.getDataCadastro());
+			conta = contaRepository.save(conta);
+			return new ContaDTO(conta);
+		}
 	}
 	
 	@Transactional
